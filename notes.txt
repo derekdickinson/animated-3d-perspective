@@ -1,0 +1,169 @@
+Derek Dickinson -- CS 645 Term Project
+
+The program "project.c" performs a series of real-time transformations to
+an object (constructed of lines) which give the illusion of motion.
+
+Several different transformations are supported:
+  scaling      (In X, Y and Z dimensions)
+  rotations    (About the three primary axises and about an arbritrary line)
+  translations (In X, Y and Z dimensions)
+
+The rotations rotate full circle.  Scaling and translation have bounding
+values which reverse the direction of transformation (sort of like a
+bounce in the case of translation).
+
+The transformations can be independantly enabled and disabled although
+the more more simultaneous transformations which are occuring will slow
+down the rate at which the new frames are generated.
+
+A variety of values can be interactively changed at run time and some of
+their statuses are displayed in a text window on the bottom of the screen.
+
+A list of the commands and what they do follows:
+
+  Q or Esc : Exit the program.
+
+  Ctrl-R : Toggle the rotation about an arbritrary axis.
+  S or Ctrl-S : Toggle scaling.
+  T or Ctrl-T : Toggle translation.
+  Ctrl-X : Toggle the rotation about the X-axis.
+  Ctrl-Y : Toggle the rotation about the y-axis.
+  Ctrl-Z : Toggle the rotation about the z-axis.
+
+  Note : Which transformations are enabled is displayed on the bottom line
+         of the text window.  Merely enabling a transformation may have
+         no effect if the values associated with the transformation are
+         null (Ex. translating 0,0,0 will not change the object).
+
+  R : Increase the angle per frame of rotation about an arbritrary axis.
+  r : Decrease the angle per frame of rotation about an arbritrary axis.
+
+  The top line in the text window on the bottom of the screen can be set
+  to display several sets of values.  These are:
+
+    Spins -- Rotations about the three primary axises (degrees per frame)
+
+    Rotation point one : Arbritrary axis line endpoint
+    Rotation point two : Arbritrary axis line endpoint
+    Degrees per frame of arbritrary rotation
+
+    Translation change per frame
+    Translation minimum values
+    Translation maximum values
+
+    Scaling change per frame
+    Scaling minimum values
+    Scaling maximum values
+
+  The groups above will be displayed at once (and top to bottom here will
+  be left to right on the screen).  When one of these lines is displayed
+  then the values displayed can be modified.  Double brackets will enclose
+  the specific value if more than one is displayed.  For example, if the
+  line contained was :
+
+Translate  [[ 0.00,0.00,0.00 ]] (-5.00,-4.00,-1.50) (5.00,4.00,6.00)
+
+  The delta translation values (currently 0,0,0) could be modified.  The
+  4 arrow keys can be used to change which value will be changed.
+
+  These keys are used to modify the selected parameters.
+
+  X : Increase value of selected X coordinate.
+  x : Decrease value of selected X coordinate.
+  Y : Increase value of selected Y coordinate.
+  y : Decrease value of selected y coordinate.
+  Z : Increase value of selected Z coordinate.
+  z : Decrease value of selected z coordinate.
+
+  The following keys are used to change the viewing transformations.
+
+  V : Toggles between perspective and parallel viewing transformations.
+  D : Increase perspective distance.
+  d : Decrease perspective distance.
+  L : Increase length parameter of parallel transformation.
+  l : Decrease length parameter of parallel transformation.
+  K : Increase angle parameter of parallel transformation.
+  k : Decrease angle parameter of parallel transformation.
+  Note: The letter k was chosen here because it is beside l.  A more
+        mnuemonic letter evades me.
+
+  /* Several different objects are available.  The object can be changed
+  using the P commands.  The value will wraparound. */
+  P : Increase (polygon) index
+  p : Decrease (polygon) index
+
+  The following commands set the transformation values to null settings.
+  This is useful since most of the adjustments are made to the changes per
+  frame.  For example, if you initiate a translation in the x direction and
+  then set the delta back to zero the object may still be translated by some
+  amount.  Alt-X would center the value back to the middle of the screen.
+
+  Alt-R : Set rotation about an arbritrary value axis to 0.
+  Alt-S : Set scale values to 1.
+  Alt-T : Set translation values to 0.
+  Alt-X : Set rotation about X axis to 0.
+  Alt-Y : Set rotation about Y axis to 0.
+  Alt-Z : Set rotation about Z axis to 0.
+
+Thats all of the possible instructions.  The previous discussion described
+the top line of the text window.  The second line contains more status
+information.  An example of it is:
+
+status=S X Y Z R T | Perspective, distance=10.00
+
+The "status" part of the line indicates which transformations are enabled.
+If the letter appears transformation is active otherwise it is not.  The
+word "Perspective" indicates that the viewing transformation is perspective
+and the distance between the veiwing plane and the center of projection is
+10.  If the V command is used to change the viewing transformation then
+the word "Parallel" and some parameters associated with it will be
+displayed.
+
+The transformations are performed in the order which they are displayed
+in the status string above.  Also, the center of the screen is defined to
+be the origin for all the transformations.
+
+
+The complement program to this one is called "multyobj.c".  This program
+allows the user to interactively place and move about as many as 9 objects
+on the screen.  Since the animation effects are not required here the
+functions are broken up a little differently here.
+
+Its command structure is very similar to that of project.c.
+The differences are:
+
+  1. Since there is no animation the delta variables do not exist so they
+     need not be adjusted.  These commands were eliminated or replaced
+     with ones to adjust absolute values.
+
+  2. I wanted to allow more precise definition of the various transformation.
+     To do this I set up a variable (curdel) which determined the amount
+     which the other values would be adjusted.  This value can be precisely
+     controlled.
+
+  3. A command was required to switch from one object to another.
+
+  New and changed commands:
+
+  R : Now increases absolute angle of change rather than per frame.
+  r : Now decreases absolute angle of change rather than per frame.
+  O : Increases Object index.
+  o : Decreases Object index.
+  A or a : Toggles whether the object is activate.
+
+  7 : Increase curdel value by 1
+  8 : Increase curdel value by .1
+  9 : Increase curdel value by .01
+
+  1 : Decrease curdel value by 1
+  2 : Decrease curdel value by .1
+  3 : Decrease curdel value by .01
+
+  The number keys were chosen due to their location on the numeric keypad.
+
+The remaining functions perform the same.  There are two additional
+status values displayed.  One of these is the current value of the
+"curdel" variable.  The other is an "A" will appear in the status
+part to indicate that the object is active.  An easy way to see which
+object you are adjusting is by typind "A" twice.  The current object
+will disappear and then reappear.
